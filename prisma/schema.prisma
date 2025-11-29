@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_type    UserType
+  email        String   @unique
+  phone        String
+  passwordHash String
+  firstName    String
+  lastName     String
+  collegeId    String?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
+  eventName        String
+  eventDescription String?
+  eventDateStart   DateTime
+  eventDateEnd     DateTime
+  eventTimeStart   DateTime?
+  eventTimeEnd     DateTime?
+  location         String?
+  maxCapacity      Int?
+  amountPerStudent Int         @default(100)
+  paymentQrCodeUrl String?
+  category         String?
+  status           EventStatus @default(ACTIVE)
+  createdByUserId  String      @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserType {
+  STUDENT
+  COORDINATOR
+  ADMIN
+}
+
+enum EventStatus {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+}
